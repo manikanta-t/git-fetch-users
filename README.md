@@ -1,1 +1,9 @@
-# git_fetch_users
+# Fetch Users using GIT API
+
+## Architecture
+
+![](images/GitUserFetchDetailsArchitecture.png)
+
+
+
+
