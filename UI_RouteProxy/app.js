@@ -5,7 +5,7 @@ const cluster = require('cluster');
 let mqUtils = require('./utils/rabbitmq')();
 let userRoute = require('./routes/user')
 
-const workerNodes = process.env.NODESCOUNT ? process.env.NODESCOUNT : 2;
+const workerNodes = process.env.CLIENT_NODES_COUNT ? process.env.CLIENT_NODES_COUNT : 3;
 
 if (cluster.isMaster) {
 
@@ -33,11 +33,22 @@ else {
         res.send('Welcome');
     });
 
+    
+
     (async function () {
+
         let oChannel = await mqUtils.getChannel().catch((err) => { throw err; });
-        await mqUtils.createQueue();
-        app.use('/user', userRoute({channel: oChannel}));
+
+        let config = {
+            queueName: 'requestQueue',
+            channel: oChannel,
+            responseQueue: `${process.pid}Response`
+        };
+
+        await mqUtils.createQueue(config.queueName, config.responseQueue);
+        app.use('/user', userRoute(config));
         server.listen(8080);
+
     })();
 
 }

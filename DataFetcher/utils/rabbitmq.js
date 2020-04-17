@@ -19,17 +19,13 @@ module.exports = function() {
 
         },
 
-        createQueue: async function(queueName, responseQueueName) {
+        createQueue: async function(queueName) {
             
             if (oChannel == null) {
                 throw err;
             }
 
             await oChannel.assertQueue(queueName, {
-                durable: true
-            });
-
-            await oChannel.assertQueue(responseQueueName, {
                 durable: true
             });
 
